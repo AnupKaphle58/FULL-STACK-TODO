@@ -4,12 +4,20 @@ import express from "express";
 // Controllers
 import { taskController } from "../controller/index.js";
 
-const { getAllTask, createTask, updateTask, deleteTask, getFilteredTask } =
-  taskController;
+const {
+  getAllTask,
+  createTask,
+  updateTask,
+  deleteTask,
+  getFilteredTask,
+  completedRate,
+} = taskController;
 
 const router = express.Router();
 
 router.get("/", getAllTask);
+
+router.get("/comp-rate", completedRate);
 
 router.get("/filter/:status", getFilteredTask);
 

@@ -3,7 +3,7 @@ import EditTask from "../modals/EditTask";
 
 const Card = ({ taskObj, index, deleteTask, updateListArray }) => {
   const [modal, setModal] = useState(false);
-  console.log(modal);
+  const created_date = new Date(taskObj.createdAt).toDateString();
 
   const toggle = () => {
     setModal(!modal);
@@ -22,8 +22,15 @@ const Card = ({ taskObj, index, deleteTask, updateListArray }) => {
         className="card border-secondary"
         style={{ width: "20%", height: "30%" }}
       >
-        <div className="card-header" style={{ width: "100%" }}>
-          Tag: <label className="tag rounded m-1"> {taskObj.task_tag}</label>
+        <div
+          className="card-header"
+          style={{ width: "100%", backgroundColor: `${taskObj.tag_color}` }}
+        >
+          Tag:{" "}
+          <label className="m-1" style={{ fontWeight: "bold" }}>
+            {" "}
+            {taskObj.task_tag}
+          </label>
           <div className="icons">
             <i
               className="bi pencil bi-pencil-square"
@@ -43,8 +50,8 @@ const Card = ({ taskObj, index, deleteTask, updateListArray }) => {
         </div>
         <div className="card-body">
           <h5 className="card-title">{taskObj.task_name}</h5>
-          <p className="card-text">{taskObj.task_description}</p>
-          <p className="card-text">{taskObj.createdAt}</p>
+          <p className="card-text text-truncate">{taskObj.task_description}</p>
+          <p className="card-text">{created_date}</p>
         </div>
       </div>
     </>

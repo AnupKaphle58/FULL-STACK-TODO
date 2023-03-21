@@ -4,6 +4,7 @@ import {
   updateTask,
   deleteTask,
   getFilteredTask,
+  completedRate,
 } from "./task.controller.js";
 
 const taskController = {
@@ -12,6 +13,7 @@ const taskController = {
   updateTask,
   deleteTask,
   getFilteredTask,
+  completedRate,
 };
 
 export { taskController };

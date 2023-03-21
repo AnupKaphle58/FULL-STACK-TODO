@@ -1,6 +1,52 @@
 // model
 import { Task } from "../models/index.js";
 
+const yesterday = new Date(Date.now() - 86400000);
+const a_day_before_yesterday = new Date(Date.now() - 86400000 - 86400000);
+const today = new Date(Date.now()).toISOString().split("T")[0];
+
+export const completedRate = async () => {
+  const completed_task = await Task.find({ task_status: "COMPLETED" });
+  const task = await Task.find();
+  const task_count = task.length;
+  const completion_rate_per_day = {};
+  let task_completed_a_day_before_yesterday = 0;
+  let task_completed_yesterday = 0;
+  let task_completed_today = 0;
+  try {
+    for (let i = 0; i < completed_task.length; i++) {
+      if (completed_task[i].updatedAt.getDate() === yesterday.getDate()) {
+        task_completed_yesterday++;
+      } else if (
+        completed_task[i].updatedAt.getDate() ===
+        a_day_before_yesterday.getDate()
+      ) {
+        task_completed_a_day_before_yesterday++;
+      } else {
+        task_completed_today++;
+      }
+    }
+    completion_rate_per_day[
+      a_day_before_yesterday.toISOString().split("T")[0]
+    ] = (task_completed_a_day_before_yesterday / task_count) * 100;
+    completion_rate_per_day[yesterday.toISOString().split("T")[0]] =
+      (task_completed_yesterday / task_count) * 100;
+    completion_rate_per_day[today] = (task_completed_today / task_count) * 100;
+    return {
+      type: "Success",
+      statusCode: 200,
+      message: "Rate of task",
+      completion_rate_per_day,
+    };
+  } catch (error) {
+    return {
+      type: "Error",
+      message: "OPPS! Something went wrong",
+      statusCode: 400,
+    };
+  }
+};
+
 export const getAllTask = async () => {
   const allTask = await Task.find();
   if (allTask.length === 0) {
@@ -36,8 +82,8 @@ export const getFilteredTask = async (task_status) => {
 };
 
 export const createTask = async (body) => {
-  const { task_name, task_status, task_description, task_tag } = body;
-  console.log(body);
+  const { task_name, task_status, task_description, task_tag, tag_color } =
+    body;
   if (!task_name || !task_status || !task_description) {
     return {
       type: "Error",
@@ -51,6 +97,7 @@ export const createTask = async (body) => {
       task_description,
       task_status,
       task_tag,
+      tag_color,
     });
     return {
       type: "Success",
@@ -75,7 +122,6 @@ export const createTask = async (body) => {
 };
 
 export const updateTask = async (body, id) => {
-  console.log(id, body);
   const { task_status } = body;
   if (!task_status) {
     return {
@@ -86,7 +132,6 @@ export const updateTask = async (body, id) => {
   }
   try {
     const findtask = await Task.findById({ _id: id });
-    console.log(findtask, "found");
     if (!findtask) {
       return {
         type: "Error",
@@ -94,12 +139,21 @@ export const updateTask = async (body, id) => {
         message: "Could not find the task ",
       };
     }
-    await Task.findByIdAndUpdate(id, body);
-    return {
-      type: "Success",
-      statusCode: 200,
-      message: "Updated",
-    };
+    if (body.task_status === "INPROGRESS") {
+      await Task.findByIdAndUpdate(id, body, { timestamps: false });
+      return {
+        type: "Success",
+        statusCode: 200,
+        message: "Updated",
+      };
+    } else {
+      await Task.findByIdAndUpdate(id, body);
+      return {
+        type: "Success",
+        statusCode: 200,
+        message: "Updated",
+      };
+    }
   } catch (error) {
     return {
       type: "Error",

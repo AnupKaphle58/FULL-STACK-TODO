@@ -1,6 +1,5 @@
 //packages
 import express from "express";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 
 //configs
@@ -21,9 +20,6 @@ app.use(
     origin: "*",
   })
 );
-
-//Cookie parser
-app.use(cookieParser());
 
 // Morgan Handler
 app.use(successHandle);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Modal,
@@ -7,14 +7,15 @@ import {
   ModalFooter,
   Input,
 } from "reactstrap";
+import { CirclePicker } from "react-color";
 import axios from "axios";
 
-const CreateTaskPopup = ({ modal, toggle, save }) => {
+const CreateTaskPopup = ({ modal, toggle }) => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [tag, setTag] = useState("");
   const [status, setStatus] = useState("INPROGRESS");
-  const [open, setOpen] = useState(false);
+  const [color, setColor] = useState("#f44336");
 
   const options = [{ INPROGRESS: "INPROGRESS" }, { COMPLETED: "COMPLETED" }];
 
@@ -27,12 +28,17 @@ const CreateTaskPopup = ({ modal, toggle, save }) => {
       setStatus(value);
     } else if (name === "tag") {
       setTag(value);
-    } else {
+    } else if (name === "description") {
       setDescription(value);
+    } else {
+      setColor(value);
     }
   };
   const onClickChange = (e) => {
     setStatus(e.target.value);
+  };
+  const handleColor = (e) => {
+    setColor(e.hex);
   };
   const handleSave = async (e) => {
     e.preventDefault();
@@ -41,9 +47,15 @@ const CreateTaskPopup = ({ modal, toggle, save }) => {
     taskObj["task_description"] = description;
     taskObj["task_status"] = status;
     taskObj["task_tag"] = tag;
-    await axios
-      .post("http://localhost:4000/api/task", taskObj)
-      .then(() => window.location.reload());
+    taskObj["tag_color"] = color;
+    await axios.post("http://localhost:4000/api/task", taskObj).then(() => {
+      toggle("false");
+      setTaskName("");
+      setDescription("");
+      setTag("");
+      setStatus("");
+      setColor("");
+    });
   };
 
   return (
@@ -82,6 +94,10 @@ const CreateTaskPopup = ({ modal, toggle, save }) => {
             onChange={handleChange}
             name="tag"
           />
+        </div>
+        <div className="form-group">
+          <label>Tag color</label>
+          <CirclePicker color={color} onChange={handleColor} />
         </div>
         <div className="form-group">
           <label>Description</label>

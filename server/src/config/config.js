@@ -11,7 +11,6 @@ const envSchema = Joi.object()
     PORT: Joi.number().default(5000),
     DATABASE_CONNECTION: Joi.string().required().description("MongoDB URL"),
     DATABASE_PASSWORD: Joi.string().required().description("MongoDB Password"),
-    JWT_SECRET: Joi.string().required().description("JWT Secret Key"),
   })
   .unknown();
 
@@ -31,9 +30,6 @@ const config = {
   db: {
     url: envVars.DATABASE_CONNECTION,
     password: envVars.DATABASE_PASSWORD,
-  },
-  jwt: {
-    secret: envVars.JWT_SECRET,
   },
 };
 

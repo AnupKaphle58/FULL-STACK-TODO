@@ -1,5 +1,24 @@
 import { taskService } from "../services/index.js";
 
+export const completedRate = async (req, res) => {
+  // 1) Calling get all tasl service
+  const { type, message, statusCode, completion_rate_per_day } =
+    await taskService.completedRate();
+
+  // 2) Check if something went wrong
+  if (type === "Error") {
+    return res.status(statusCode).json({
+      type,
+      message: message,
+    });
+  }
+  return res.status(statusCode).json({
+    type,
+    message: message,
+    completion_rate_per_day,
+  });
+};
+
 export const getAllTask = async (req, res) => {
   // 1) Calling get all tasl service
   const { type, message, statusCode, allTask } = await taskService.getAllTask();

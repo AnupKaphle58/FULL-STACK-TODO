@@ -22,6 +22,9 @@ const taskSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
+    tag_color: {
+      type: String,
+    },
   },
   {
     timestamps: true,

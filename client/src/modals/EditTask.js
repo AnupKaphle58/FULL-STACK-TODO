@@ -7,13 +7,15 @@ import {
   ModalFooter,
   Input,
 } from "reactstrap";
+import { CirclePicker } from "react-color";
 import axios from "axios";
 
-const EditTaskPopup = ({ modal, toggle, updateTask, taskObj }) => {
+const EditTaskPopup = ({ modal, toggle, taskObj }) => {
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [tag, setTag] = useState("");
   const [status, setStatus] = useState("");
+  const [color, setColor] = useState("");
   const options = [{ INPROGRESS: "INPROGRESS" }, { COMPLETED: "COMPLETED" }];
   const id = taskObj._id;
 
@@ -26,13 +28,14 @@ const EditTaskPopup = ({ modal, toggle, updateTask, taskObj }) => {
       setStatus(value);
     } else if (name === "tag") {
       setTag(value);
-    } else {
+    } else if (name === "description") {
       setDescription(value);
+    } else {
+      setColor(value);
     }
   };
 
   const onClickChange = (e) => {
-    console.log(e.target.value);
     setStatus(e.target.value);
   };
 
@@ -41,24 +44,31 @@ const EditTaskPopup = ({ modal, toggle, updateTask, taskObj }) => {
     setDescription(taskObj.task_description);
     setTag(taskObj.task_tag);
     setStatus(taskObj.task_status);
+    setColor(taskObj.tag_color);
   }, []);
+  const handleColor = (e) => {
+    setColor(e.hex);
+  };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    console.log(id);
     let taskObj = {};
     taskObj["task_name"] = taskName;
     taskObj["task_description"] = description;
     taskObj["task_status"] = status;
     taskObj["task_tag"] = tag;
+    taskObj["tag_color"] = color;
     await axios
       .patch(`http://localhost:4000/api/task/${id}`, taskObj)
-      .then(() => window.location.reload());
+      .then(() => {
+        toggle("false");
+        window.location.reload();
+      });
   };
 
   return (
     <Modal isOpen={modal} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Create Task</ModalHeader>
+      <ModalHeader toggle={toggle}>Edit Task</ModalHeader>
       <ModalBody>
         <div className="form-group">
           <label>Task Name</label>
@@ -72,7 +82,11 @@ const EditTaskPopup = ({ modal, toggle, updateTask, taskObj }) => {
         </div>
         <div className="form-group">
           <label>Task Status</label>
-          <Input type="select" onClick={onClickChange}>
+          <Input
+            type="select"
+            onClick={onClickChange}
+            defaultValue={taskObj.task_status}
+          >
             {options.map((option, index) => {
               return (
                 <option value={Object.values(option)} key={index}>
@@ -92,6 +106,10 @@ const EditTaskPopup = ({ modal, toggle, updateTask, taskObj }) => {
             onChange={handleChange}
             name="tag"
           />
+        </div>
+        <div className="form-group">
+          <label>Tag color</label>
+          <CirclePicker color={color} onChange={handleColor} />
         </div>
         <div className="form-group">
           <label>Description</label>

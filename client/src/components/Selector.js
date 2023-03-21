@@ -2,20 +2,18 @@ import React, { useState } from "react";
 
 function Selector({ filteredTask, fetchAll }) {
   const [selected, setSelected] = useState(1);
-  const handleClick = (divNum) => () => {
-    console.log(divNum, "divNum");
+  const handleClick = (divNum) => {
     setSelected(divNum);
   };
   const handleFilter = (filter) => {
     filteredTask(filter);
   };
-  console.log(selected);
   return (
     <div className="selector-main mt-2">
       <div className="btn-group" role="group" aria-label="Basic example">
         <button
           type="button"
-          className={`btn btn-light ${selected === "1" ? "active" : " "}`}
+          className={`btn btn-light ${selected === 1 ? "active" : " "}`}
           onClick={() => {
             handleClick(1);
             fetchAll();
@@ -25,11 +23,10 @@ function Selector({ filteredTask, fetchAll }) {
         </button>
         <button
           type="button"
-          className={`btn btn-light ${selected === "2" ? "active" : " "}`}
+          className={`btn btn-light ${selected === 2 ? "active" : " "}`}
           onClick={() => {
-            handleClick(2);
-            console.log(selected);
             handleFilter("INPROGRESS");
+            handleClick(2);
           }}
         >
           In progress
@@ -39,7 +36,6 @@ function Selector({ filteredTask, fetchAll }) {
           className={`btn btn-light ${selected === 3 ? "active" : " "}`}
           onClick={() => {
             handleClick(3);
-            console.log(selected);
             handleFilter("COMPLETED");
           }}
         >
