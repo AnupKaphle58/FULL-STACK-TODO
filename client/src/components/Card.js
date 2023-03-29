@@ -10,7 +10,8 @@ const Card = ({ taskObj, index, deleteTask, updateListArray }) => {
   };
 
   const updateTask = (obj) => {
-    updateListArray(obj, index);
+    console.log(obj._id);
+    // updateListArray(obj, taskObj._id);
   };
 
   const handleDelete = () => {

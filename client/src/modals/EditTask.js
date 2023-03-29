@@ -16,8 +16,8 @@ const EditTaskPopup = ({ modal, toggle, taskObj }) => {
   const [tag, setTag] = useState("");
   const [status, setStatus] = useState("");
   const [color, setColor] = useState("");
-  const options = [{ INPROGRESS: "INPROGRESS" }, { COMPLETED: "COMPLETED" }];
   const id = taskObj._id;
+  const options = [{ INPROGRESS: "INPROGRESS" }, { COMPLETED: "COMPLETED" }];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +62,7 @@ const EditTaskPopup = ({ modal, toggle, taskObj }) => {
       .patch(`http://localhost:4000/api/task/${id}`, taskObj)
       .then(() => {
         toggle("false");
+        console.log(id);
         window.location.reload();
       });
   };
