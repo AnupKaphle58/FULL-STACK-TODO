@@ -20,8 +20,8 @@ export const completedRate = async () => {
       {
         $match: {
           updatedAt: {
-            $gte: new Date("2023-03-01"),
-            $lte: new Date("2023-03-30"),
+            $gte: new Date(a_day_before_yesterday),
+            $lte: new Date(today),
           },
           task_status: "COMPLETED",
         },
